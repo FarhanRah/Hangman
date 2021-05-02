@@ -1,0 +1,68 @@
+#choice = input("Would you like to write a custom word or let us generate a random word for you? (Please type 'Custom' or 'Random': ").lower()
+
+# Creating a function to clear the screen after each input by user
+import os
+# define our clear function 
+def clear(): 
+    # for windows 
+    if os.name == 'nt': 
+        _ = os.system('cls') 
+  
+    # for mac and linux(here, os.name is 'posix') 
+    else: 
+        _ = os.system('clear') 
+
+# Printing the intro logo
+import hangman_art
+print(hangman_art.logo)
+
+# Choosing a random word
+import hangman_words
+import random
+random_word = random.choice(hangman_words.word_list)
+print(f"For test purposes the random word chosen is: {random_word}")
+
+# Creating the word array with "_"
+display = []
+for letter in random_word:
+  display.append("_")
+
+# Creating the required functions
+def isPresent(arr, var):
+  for n in arr:
+    if (n == var):
+      return True
+  
+  return False
+
+# Asking user for the guess of the letter
+user_guesses = []
+lifes = 6
+while lifes > 0 and isPresent(display, "_"):
+  guess = input("Guess a letter: ").lower()
+  clear()
+  if (isPresent(user_guesses, guess)):
+    print("You have already tried that letter!")
+    print(display)
+    print(hangman_art.stages[lifes])
+    continue
+  user_guesses.append(guess)
+
+  status = False
+  for index in range(len(random_word)):
+    if (guess == random_word[index]):
+      display[index] = guess
+      status = True
+
+  print(display)
+
+  if (not status):
+    lifes -= 1
+
+  print(hangman_art.stages[lifes])
+
+if (lifes > 0):
+  print("You won!")
+else:
+  print("You lost all the lifes!")
+  print(f"The word was: {random_word}")
